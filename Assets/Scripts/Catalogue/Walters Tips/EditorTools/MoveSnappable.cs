@@ -3,6 +3,35 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.EditorTools;
 
+
+
+//Walter 's tip of the day - 10/31/2020:
+//Raise your hand if you've ever made an "EditorTool".
+//Gotcha! Trick question - practically no-one has, even if they're advanced Unity users. 
+//That’s because EditorTools are an official Unity thing, yet unfortunately they're hardly known.
+//https://docs.unity3d.com/2019.1/Documentation/ScriptReference/EditorTools.EditorTool.html
+
+//https://docs.unity3d.com/Manual/UsingCustomEditorTools.html#ToolModesAccessSceneViewPanel
+
+//They are a way to get your own handles to show up in the hotbar with the other tools.
+
+
+//You can make one with or without a target type.
+//Unity themselves uses target types with their Colliders for example: 
+//https://gyazo.com/5fa77418a6ac3f6a02af0a612bb2f279
+
+//A targeted tool isn't that different, but only shows up if the selected GameObject has a component of the type it's for.
+//-
+//Use one of Unity’s built-in icons from this list, or simply use your own, your choice.
+//https://github.com/halak/unity-editor-icons
+//If you are going to use your own it has to be tagged as "Editor GUI and Legacy GUI"
+//-----
+//Here I made a little tool where you can snap "Snappable" components together.
+
+//Each prefab has a Snappable Component which is simply a list of every point it has that can snap.
+
+
+
 [EditorTool(displayName: "Move Snappable", targetType: typeof(Snappable))]
 public class MoveSnappable : EditorTool
 {

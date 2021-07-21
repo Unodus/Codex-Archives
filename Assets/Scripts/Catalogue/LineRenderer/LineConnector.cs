@@ -18,7 +18,7 @@ public class LineConnector : MonoBehaviour
     [SerializeField] LineRenderer m_lineRenderer; //Attach the LineRenderer in the Inspector
     [SerializeField] Transform[] lineObjectPositions; // Assign the desired transforms for the line to traverse, in the inspector
 
-    public void OnDrawGizmos() // Used to update in the Inspector
+    public void OnValidate() // Used to update in the Inspector
     {
         UpdatePositions();
     }

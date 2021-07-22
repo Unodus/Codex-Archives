@@ -20,4 +20,18 @@ public static class EnumExtensions
         int j = Array.IndexOf<T>(Arr, src) + 1;
         return (Arr.Length == j) ? Arr[0] : Arr[j];
     }
+
+    //checks to see if an enumerated value contains a type
+    public static bool Has<T>(this System.Enum type, T value)
+    {
+        try
+        {
+            return (((int)(object)type &
+              (int)(object)value) == (int)(object)value);
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

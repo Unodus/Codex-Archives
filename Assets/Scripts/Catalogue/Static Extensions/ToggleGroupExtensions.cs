@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,8 @@ public static class ToggleGroupExtensions
     /// </summary>
     /// <param name="grp"></param>
     /// <returns></returns>
+    /// 
+
     public static IList<Toggle> GetToggles(this ToggleGroup grp)
     {
         if (m_ToggleListMember == null)
@@ -29,6 +32,13 @@ public static class ToggleGroupExtensions
         return GetToggles(grp).Count;
     }
 
+
+
+    //https://forum.unity3d.com/threads/change-the-value-of-a-toggle-without-triggering-onvaluechanged.275056/#post-2750271
+    public static Toggle GetActive(this ToggleGroup aGroup)
+    {
+        return aGroup.ActiveToggles().FirstOrDefault();
+    }
     public static Toggle Get(this ToggleGroup grp, int index)
     {
         return GetToggles(grp)[index];

@@ -4,9 +4,51 @@ using UnityEngine;
 
 public static class TransformExtensions 
 {
-  
-        //Breadth-first search
-        public static Transform FindDeepChild(this Transform aParent, string aName)
+
+
+    /// <summary>
+    /// It zeros out the locals 
+    /// </summary>
+    /// <param name="lTransform"></param>
+    /// 
+
+
+    public static void SetTransformLocal(this Transform lGameObject, Transform lMyTransform)
+    {
+        lGameObject.localPosition = lMyTransform.position;
+        lGameObject.localRotation = lMyTransform.rotation;
+        lGameObject.localScale = lMyTransform.localScale;
+    }
+    public static void ResetLocalTransform(this Transform lTransform)
+    {
+        lTransform.localPosition = Vector3.zero;
+        lTransform.localScale = Vector3.one;
+        lTransform.localRotation = Quaternion.identity;
+    }
+
+    public static void ResetTransform(this Transform lTransform)
+    {
+        lTransform.position = Vector3.zero;
+        lTransform.rotation= Quaternion.identity;
+        lTransform.localScale = Vector3.one;
+    }
+
+    public static void SetTransform(this Transform lTransform, Vector3 lLocalPosition)
+    {
+        lTransform.localPosition = lLocalPosition;
+        lTransform.localRotation = Quaternion.identity;
+        lTransform.localScale = Vector3.one;
+    }
+
+    public static void SetTransformLocals(this Transform lTransform, Quaternion lLocalRotation)
+    {
+        lTransform.localPosition = Vector3.zero;
+        lTransform.localRotation = lLocalRotation;
+        lTransform.localScale = Vector3.one;
+    }
+
+    //Breadth-first search
+    public static Transform FindDeepChild(this Transform aParent, string aName)
         {
             //if you search for "" it will return the object your searching in, so check that string is empty and return nothing
             if (true == string.IsNullOrEmpty(aName))
@@ -26,20 +68,5 @@ public static class TransformExtensions
             return null;
         }
 
-        /*
-        //Depth-first search
-        public static Transform FindDeepChild(this Transform aParent, string aName)
-        {
-            foreach(Transform child in aParent)
-            {
-                if(child.name == aName )
-                    return child;
-                var result = child.FindDeepChild(aName);
-                if (result != null)
-                    return result;
-            }
-            return null;
-        }
-        */
-    
+      
 }

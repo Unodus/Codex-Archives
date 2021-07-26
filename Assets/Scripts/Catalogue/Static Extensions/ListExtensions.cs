@@ -8,4 +8,35 @@ public static class ListExtenstions
     {
         list.AddRange(elements);
     }
+
+    public static void MoveUp<T>(this List<T> list, uint lIndex)
+    {
+        if (list.CanMoveUp(lIndex) == true) list.Swap(lIndex, lIndex - 1);
+    }
+    public static void MoveDown<T>(this List<T> list, uint lIndex)
+    {
+        if (list.CanMoveDown(lIndex) == true) list.Swap(lIndex, lIndex + 1);
+    }
+
+    public static bool CanMoveUp<T>(this List<T> list, uint lIndex)
+    {
+        return (list.IsValidIndex(lIndex) && lIndex > 0);
+    }
+    public static bool CanMoveDown<T>(this List<T> list, uint lIndex)
+    {
+        return (list.IsValidIndex(lIndex) && lIndex <= list.Count - 2);
+    }
+
+    public static void Swap<T>(this List<T> list, uint lIndex1, uint lIndex2)
+    {
+        if (lIndex1 == lIndex2) return;
+        if (list.IsValidIndex(lIndex1) == false || list.IsValidIndex(lIndex2) == false) return;
+        T aux = list[(int)lIndex1];
+        list[(int)lIndex1] = list[(int)lIndex2];
+        list[(int)lIndex2] = aux;
+    }
+    public static bool IsValidIndex<T>(this List<T> list, uint lIndex)
+    {
+        return (lIndex <= list.Count - 1);
+    }
 }

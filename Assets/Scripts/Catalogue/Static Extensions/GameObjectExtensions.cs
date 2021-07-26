@@ -7,6 +7,50 @@ public static class GameObjectExtensions
 {
 
 	/// <summary>
+	/// quick way to set objects parent
+	/// </summary>
+	/// <param name="lThis"></param>
+	/// <param name="lOther"></param>
+	public static void SetParent(this GameObject lThis, GameObject lOther)
+	{
+		if (null == lOther) lThis.transform.SetParent(null);
+		else lThis.transform.SetParent(lOther.transform);
+	}
+	public static void SetTransformLocals(this GameObject lGameObject, Vector3 lLocalPosition, Quaternion lRotation)
+	{
+		lGameObject.transform.SetTransformLocals(lLocalPosition, lRotation);
+	}
+	public static void SetTransformLocals(this Transform lTransform, Vector3 lLocalPosition, Quaternion lRotation)
+	{
+		lTransform.localPosition = lLocalPosition;
+		lTransform.localRotation = lRotation;
+		lTransform.localScale = Vector3.one;
+	}
+
+	public static void SetTransformLocals(this GameObject lGameObject)
+	{
+		lGameObject.transform.ResetTransform();
+	}
+
+	public static void SetTransformLocals(this GameObject lGameObject, Vector3 lLocalPosition)
+	{
+		lGameObject.transform.SetTransform(lLocalPosition);
+	}
+
+	public static void SetTransformLocals(this GameObject lGameObject, Quaternion lLocalRotation)
+	{
+		lGameObject.transform.SetTransformLocals(lLocalRotation);
+	}
+
+
+
+
+
+
+
+
+
+	/// <summary>
 	/// Combines child objects of a prefab into a single mesh saving draw calls
 	/// 
 	/// The Child objects must all have the same material. The mesh must be non-moveable
@@ -61,22 +105,8 @@ public static class GameObjectExtensions
 					GameObject.Destroy(newParent);
 				}
 
-				//If parent max is reached or we have reached the end of the list
-				//				if ((currentNum == numPerParent) || (i == iCount-1))
-				//				{
-				//					//Combine the items into the parent
-				//					currentNum = 0;
-				//					CombineChildren(newParent, m_Material);
-				//					numParents++;
-				//
-				//					//if not at the end of the list... prepare a new parent for the next items
-				//					if (i != iCount-1)
-				//					{
-				//					}
-				//				}
-			}
 
-			//			GameObject.Destroy(parent);
+			}
 		}
 	}
 
@@ -253,4 +283,81 @@ public static class GameObjectExtensions
 			obj.AddComponent<T>();
 		}
 	}
+
+	public static void AdvancedMerge(this GameObject i)
+	{
+		// All our children (and us)
+		MeshFilter[] filters = i.GetComponentsInChildren<MeshFilter>(false);
+
+		if (filters.Length == 0) return;
+
+		// All the meshes in our children (just a big list)
+		List<Material> materials = new List<Material>(); // List materials = new List();
+
+		MeshRenderer[] renderers = i.GetComponentsInChildren<MeshRenderer>(false); // <-- you can optimize this
+		foreach (MeshRenderer renderer in renderers)
+		{
+			if (renderer.transform == i.transform)
+				continue;
+			Material[] localMats = renderer.sharedMaterials;
+			foreach (Material localMat in localMats)
+				if (!materials.Contains(localMat))
+					materials.Add(localMat);
+		}
+
+
+		// Each material will have a mesh for it.
+		List<Mesh> submeshes = new List<Mesh>(); // List submeshes = new List();
+		foreach (Material material in materials)
+		{
+			// Make a combiner for each (sub)mesh that is mapped to the right material.
+			System.Collections.Generic.List<CombineInstance> combiners = new System.Collections.Generic.List<CombineInstance>();
+			foreach (MeshFilter filter in filters)
+			{
+				if (filter.transform == i.transform) continue;
+				// The filter doesn't know what materials are involved, get the renderer.
+				MeshRenderer renderer = filter.GetComponent<MeshRenderer>();  // <-- (Easy optimization is possible here, give it a try!)
+				if (renderer == null)
+				{
+					Debug.LogError(filter.name + " has no MeshRenderer");
+					continue;
+				}
+
+				// Let's see if their materials are the one we want right now.
+				Material[] localMaterials = renderer.sharedMaterials;
+				for (int materialIndex = 0; materialIndex < localMaterials.Length; materialIndex++)
+				{
+					if (localMaterials[materialIndex] != material)
+						continue;
+					// This submesh is the material we're looking for right now.
+					CombineInstance ci = new CombineInstance();
+					ci.mesh = filter.sharedMesh;
+					ci.subMeshIndex = materialIndex;
+					ci.transform = Matrix4x4.identity;
+					combiners.Add(ci);
+				}
+			}
+			// Flatten into a single mesh.
+			Mesh mesh = new Mesh();
+			mesh.CombineMeshes(combiners.ToArray(), true);
+			submeshes.Add(mesh);
+		}
+
+		// The final mesh: combine all the material-specific meshes as independent submeshes.
+		List<CombineInstance> finalCombiners = new System.Collections.Generic.List<CombineInstance>();
+		foreach (Mesh mesh in submeshes)
+		{
+			CombineInstance ci = new CombineInstance();
+			ci.mesh = mesh;
+			ci.subMeshIndex = 0;
+			ci.transform = Matrix4x4.identity;
+			finalCombiners.Add(ci);
+		}
+		Mesh finalMesh = new Mesh();
+		finalMesh.CombineMeshes(finalCombiners.ToArray(), false);
+		i.GetComponent<MeshFilter>().sharedMesh = finalMesh;
+		Debug.Log("Final mesh has " + submeshes.Count + " materials.");
+	}
+
+
 }

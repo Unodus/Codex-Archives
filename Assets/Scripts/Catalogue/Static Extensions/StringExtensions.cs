@@ -7,6 +7,12 @@ using UnityEngine;
 public static class StringExtensions
 {
 
+    public static bool Contains(this string source, string toCheck, bool CaseSensitive = false )
+    {
+        if (CaseSensitive) return source.IndexOf(toCheck, System.StringComparison.Ordinal) >= 0;
+        else return source.IndexOf(toCheck, System.StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
     public static string AddSpacesToSentence(this string text, bool preserveAcronyms)
     {
         if (true == string.IsNullOrEmpty(text))

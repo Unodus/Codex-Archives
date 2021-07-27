@@ -13,12 +13,9 @@ public static class TransformExtensions
     /// 
 
 
-    public static void SetTransformLocal(this Transform lGameObject, Transform lMyTransform)
-    {
-        lGameObject.localPosition = lMyTransform.position;
-        lGameObject.localRotation = lMyTransform.rotation;
-        lGameObject.localScale = lMyTransform.localScale;
-    }
+
+
+
     public static void ResetLocalTransform(this Transform lTransform)
     {
         lTransform.localPosition = Vector3.zero;
@@ -37,15 +34,28 @@ public static class TransformExtensions
     {
         lTransform.localPosition = lLocalPosition;
         lTransform.localRotation = Quaternion.identity;
-        lTransform.localScale = Vector3.one;
+    }
+
+    public static void SetTransformLocal(this Transform lGameObject, Transform lMyTransform)
+    {
+        lGameObject.localPosition = lMyTransform.position;
+        lGameObject.localRotation = lMyTransform.rotation;
+        lGameObject.localScale = lMyTransform.localScale;
     }
 
     public static void SetTransformLocals(this Transform lTransform, Quaternion lLocalRotation)
     {
         lTransform.localPosition = Vector3.zero;
         lTransform.localRotation = lLocalRotation;
-        lTransform.localScale = Vector3.one;
     }
+
+    public static void SetTransformLocals(this Transform lTransform, Vector3 lLocalPosition, Quaternion lRotation)
+    {
+        lTransform.localPosition = lLocalPosition;
+        lTransform.localRotation = lRotation;
+    }
+
+
 
     //Breadth-first search
     public static Transform FindDeepChild(this Transform aParent, string aName)

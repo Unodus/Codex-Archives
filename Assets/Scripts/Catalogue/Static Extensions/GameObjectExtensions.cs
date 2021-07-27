@@ -5,12 +5,70 @@ using UnityEngine;
 
 public static class GameObjectExtensions 
 {
+	public static void DestroyChildren(this GameObject parent)
+	{
+		Transform[] children = new Transform[parent.transform.childCount];
+		for (int i = 0; i < parent.transform.childCount; i++)
+			children[i] = parent.transform.GetChild(i);
+		for (int i = 0; i < children.Length; i++)
+			GameObject.Destroy(children[i].gameObject);
+	}
+	public static void MoveChildren(this GameObject from, GameObject to)
+	{
+		Transform[] children = new Transform[from.transform.childCount];
+		for (int i = 0; i < from.transform.childCount; i++)
+			children[i] = from.transform.GetChild(i);
+		for (int i = 0; i < children.Length; i++)
+			children[i].SetParent(to.transform);
+	}
 
-	/// <summary>
-	/// quick way to set objects parent
-	/// </summary>
-	/// <param name="lThis"></param>
-	/// <param name="lOther"></param>
+
+	public static int GetCollisionMask(this GameObject gameObject, int layer = -1)
+	{
+		if (layer == -1)
+			layer = gameObject.layer;
+
+		int mask = 0;
+		for (int i = 0; i < 32; i++)
+			mask |= (Physics.GetIgnoreLayerCollision(layer, i) ? 0 : 1) << i;
+
+		return mask;
+	}
+
+
+
+	#region Tag & Layers
+
+
+
+
+	public static void SetTagRecursive(this GameObject myObject, string sTag)
+	{
+		myObject.tag = sTag;
+		foreach (Transform t in myObject.transform) t.gameObject.SetTagRecursive(sTag);
+	}
+
+	public static void SetTagRecursive(this GameObject myObject, string sTag, string sOnlyContains)
+	{
+		if (true == myObject.name.Contains(sOnlyContains)) myObject.tag = sTag;
+		foreach (Transform t in myObject.transform) t.gameObject.SetTagRecursive(sTag);
+	}
+
+	public static void SetLayerRecursive(this GameObject myObject, int iLayer)
+	{
+		myObject.layer = iLayer;
+		foreach (Transform t in myObject.transform) t.gameObject.SetLayerRecursive(iLayer);
+	}
+	public static void SetLayerRecursiveIfNotDefault(this GameObject myObject, int iLayer)
+	{
+		if (myObject.layer != LayerMask.NameToLayer("Default") ) myObject.layer = iLayer;
+		foreach (Transform t in myObject.transform) t.gameObject.SetLayerRecursiveIfNotDefault(iLayer);
+	}
+	
+ 
+	#endregion
+
+
 	public static void SetParent(this GameObject lThis, GameObject lOther)
 	{
 		if (null == lOther) lThis.transform.SetParent(null);
@@ -20,12 +78,7 @@ public static class GameObjectExtensions
 	{
 		lGameObject.transform.SetTransformLocals(lLocalPosition, lRotation);
 	}
-	public static void SetTransformLocals(this Transform lTransform, Vector3 lLocalPosition, Quaternion lRotation)
-	{
-		lTransform.localPosition = lLocalPosition;
-		lTransform.localRotation = lRotation;
-		lTransform.localScale = Vector3.one;
-	}
+	
 
 	public static void SetTransformLocals(this GameObject lGameObject)
 	{
@@ -358,6 +411,9 @@ public static class GameObjectExtensions
 		i.GetComponent<MeshFilter>().sharedMesh = finalMesh;
 		Debug.Log("Final mesh has " + submeshes.Count + " materials.");
 	}
+
+
+	 
 
 
 }

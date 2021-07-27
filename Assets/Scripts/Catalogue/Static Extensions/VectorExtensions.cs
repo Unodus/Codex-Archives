@@ -5,9 +5,22 @@ using UnityEngine;
 public static class VectorExtensions 
 {
 
+    public static Vector2 Rotate(this Vector2 vector, float degrees)
+    {
+        float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
+        float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
 
- 
+        float tx = vector.x;
+        float ty = vector.y;
+        vector.x = (cos * tx) - (sin * ty);
+        vector.y = (sin * tx) + (cos * ty);
+        return vector;
+    }
 
+    public static Vector3Int ConvertToVector3(this Vector3 vec3)
+    {
+        return new Vector3Int((int)vec3.x, (int)vec3.y, (int)vec3.z);
+    }
 
     /// <summary>
     /// Change the x value of vector 3

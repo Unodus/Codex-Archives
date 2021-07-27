@@ -39,6 +39,15 @@ public static class FloatExtensions
 
     #endregion
 
+    public static float RotationNormalizedDeg(this float rotation)
+    {
+        rotation = rotation % 360f;
+        if (rotation < 0)
+            rotation += 360f;
+        return rotation;
+    }
+
+
     public static float Clamp(this float fAmount, float fMin, float fMax)
     {
         if (fAmount < fMin) fAmount = fMin;

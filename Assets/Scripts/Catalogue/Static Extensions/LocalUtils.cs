@@ -303,94 +303,6 @@ public static class LocalUtils
     }
     #endregion
 
-    #region Tag & Layers
-    /// <summary>
-    /// Sets a tag through out the gameobject hierarchy.
-    /// </summary>
-    public static void SetTagRecursive(Transform transform, string sTag)
-    {
-        transform.tag = sTag;
-
-        Transform stockTransform = null;
-        int iChildCount = transform.childCount;
-        for (int iChild = 0; iChild < iChildCount; iChild++)
-        {
-            stockTransform = transform.GetChild(iChild);
-
-            if (null != stockTransform)
-            {
-                SetTagRecursive(stockTransform, sTag);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Sets a tag through out the gameobject hierarchy, but only if they contain a certain name
-    /// </summary>
-    public static void SetTagRecursive(Transform transform, string sTag, string sOnlyContains)
-    {
-        if (true == transform.name.Contains(sOnlyContains))
-        {
-            transform.tag = sTag;
-        }
-
-        Transform stockTransform = null;
-        int iChildCount = transform.childCount;
-        for (int iChild = 0; iChild < iChildCount; iChild++)
-        {
-            stockTransform = transform.GetChild(iChild);
-
-            if ((null != stockTransform) && (true == stockTransform.name.Contains(sOnlyContains)))
-            {
-                SetTagRecursive(stockTransform, sTag, sOnlyContains);
-            }
-        }
-    }
-
-    public static void SetLayer(Transform transform, int iLayer)
-    {
-        transform.gameObject.layer = iLayer;
-
-        Transform stockTransform = null;
-        int iChildCount = transform.childCount;
-        for (int iChild = 0; iChild < iChildCount; iChild++)
-        {
-            stockTransform = transform.GetChild(iChild);
-
-            if (null != stockTransform)
-            {
-                SetLayer(stockTransform, iLayer);
-            }
-        }
-
-    }
-
-    /// <summary>
-    /// Sets the layer if not default, does for all children
-    /// </summary>
-    public static void SetLayerIfNotDefault(Transform transform, int iLayer)
-    {
-        int iNormalLayer = LayerMask.NameToLayer("Default");
-
-        if (transform.gameObject.layer != iNormalLayer)
-        {
-            transform.gameObject.layer = iLayer;
-        }
-
-        Transform stockTransform = null;
-        int iChildCount = transform.childCount;
-        for (int iChild = 0; iChild < iChildCount; iChild++)
-        {
-            stockTransform = transform.GetChild(iChild);
-
-            if (null != stockTransform)
-            {
-                SetLayerIfNotDefault(stockTransform, iLayer);
-            }
-        }
-    }
-    #endregion
-
     #region General Stuff
 
 
@@ -789,8 +701,15 @@ public static class LocalUtils
     /// </summary>
     public static Color GetRandomColour()
     {
+        
         return new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f));
     }
+
+    public static Color WithAlpha(this Color color, float alpha)
+    {
+        return new Color(color.r, color.g, color.b, alpha);
+    }
+
 
     /// <summary>
     /// Sets the color from float. Has to be 0-225 and include .0f

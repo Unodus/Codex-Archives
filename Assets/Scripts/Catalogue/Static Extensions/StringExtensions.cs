@@ -1,12 +1,31 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using UnityEngine;
 
 public static class StringExtensions
 {
 
+    // Remove all diacritics from a string
+    public static string RemoveDiacritics(this string text)
+    {
+        string normalizedString = text.Normalize(NormalizationForm.FormD);
+        StringBuilder stringBuilder = new StringBuilder();
+        char character;
+
+        for (int i = 0; i < normalizedString.Length; i++)
+        {
+            character = normalizedString[i];
+            if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)
+            {
+                stringBuilder.Append(character);
+            }
+        }
+
+        return stringBuilder.ToString();
+    }
     public static bool Contains(this string source, string toCheck, bool CaseSensitive = false )
     {
         if (CaseSensitive) return source.IndexOf(toCheck, System.StringComparison.Ordinal) >= 0;

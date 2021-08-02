@@ -6,6 +6,13 @@ using UnityEngine;
 
 public static class EnumExtensions
 {
+    // Gets a list with all the enum values inside
+    public static List<T> GetEnumList<T>()
+    {
+        T[] array = (T[])System.Enum.GetValues(typeof(T));
+        List<T> list = new List<T>(array);
+        return list;
+    }
 
     public static T LoopIncrement<T>(this T lIndex) where T : struct, IConvertible
     {

@@ -4,6 +4,19 @@ using UnityEngine;
 
 public static class ListExtenstions
 {
+
+    public static T Random<T>(this List<T> list)
+    {
+        if (list.Count == 0)
+        {
+            Debug.LogError("Cannot select a random item from an empty list");
+            return default(T);
+        }
+
+        return list[UnityEngine.Random.Range(0, list.Count)];
+    }
+
+
     public static void AddMany<T>(this List<T> list, params T[] elements)
     {
         list.AddRange(elements);

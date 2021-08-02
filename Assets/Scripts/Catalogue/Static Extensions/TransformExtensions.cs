@@ -4,18 +4,21 @@ using UnityEngine;
 
 public static class TransformExtensions 
 {
+    
+    // Extension that rotates a transform using a 2D direction (on the Z axis), use the correction value depending on your sprite orientation (0 is facing right)
+    public static Transform LookAtDirection2D(this Transform transform, Vector2 dir, float correction = 0)
+    {
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle + correction);
+        return transform;
+    }
 
 
-    /// <summary>
+
+
+
+
     /// It zeros out the locals 
-    /// </summary>
-    /// <param name="lTransform"></param>
-    /// 
-
-
-
-
-
     public static void ResetLocalTransform(this Transform lTransform)
     {
         lTransform.localPosition = Vector3.zero;

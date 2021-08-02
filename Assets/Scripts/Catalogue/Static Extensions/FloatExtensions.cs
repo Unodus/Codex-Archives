@@ -39,6 +39,31 @@ public static class FloatExtensions
 
     #endregion
 
+
+    // Calculate the probability between 0 and number
+    public static bool RandomProbability(this float chance, float OutOf = 100)
+    {
+        return UnityEngine.Random.Range(0, OutOf) <= chance;
+    }
+
+    public static string TimeFormat(this float time)
+    {
+        int minutes = (int)time / 60;
+        int seconds = (int)time - 60 * minutes;
+
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+
+    public static float RotationNormalizedDeg(this float rotation)
+    {
+        rotation = rotation % 360f;
+        if (rotation < 0)
+            rotation += 360f;
+        return rotation;
+    }
+
+
     public static float Clamp(this float fAmount, float fMin, float fMax)
     {
         if (fAmount < fMin) fAmount = fMin;

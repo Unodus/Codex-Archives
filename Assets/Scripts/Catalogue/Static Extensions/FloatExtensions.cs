@@ -63,6 +63,11 @@ public static class FloatExtensions
         return rotation;
     }
 
+    public static float Map(this float input, float oldMin, float oldMax, float newMin, float newMax)
+    {
+        return newMin + (input - oldMin) * (newMax - newMin) / (oldMax - oldMin);
+    }
+
 
     public static float Clamp(this float fAmount, float fMin, float fMax)
     {
